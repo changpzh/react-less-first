@@ -5,7 +5,7 @@ import './index.css';
 const { render } = ReactDOM;
 
 
-
+/* replace 为true的时，点击链接后将使用新地址替换掉上一次访问的地址*/
 const Links = () => (
     <nav>
         <Link to="/">主页</Link>

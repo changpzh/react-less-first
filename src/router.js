@@ -1,18 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {BrowserRouter, Route, Link} from 'react-router-dom';
-import './index.css';
+
 const { render } = ReactDOM;
-
-
 
 const Links = () => (
     <nav>
-        <Link to="/">主页</Link>
-        <Link to="/about">About-页面</Link>
-        <Link replace to="/contact">Contact-页面</Link>
-        <Link to="/user">User</Link>
-        <Link to="/nested">Nested-页面</Link>
+        <Link to="/">Home</Link>
+        <Link to="/about">About</Link>
+        <Link replace to="/contact">Contact</Link>
+        <Link to="/nested">Nested</Link>
     </nav>
 );
 
@@ -20,24 +17,16 @@ const App = () => (
     <BrowserRouter>
         <div>
             <AddressBar/>
+
             <Links />
+
             <Route exact path="/" render={() => <h1>Home</h1>} />
             <Route path="/about" render={() => <h1>About</h1>} />
             <Route path="/contact" render={() => <h1>Contact</h1>} />
-            <Route path="/user" render={UserNested} />
             <Route path="/nested" render={Nested} />
         </div>
     </BrowserRouter>
-);
-const UserNested = () => (
-    <div>
-        <Link to={"/user/zhou"}>zhou</Link>
-        <Link to={"/user/chang"}>chang</Link>
-        <Link to={"/user/ping"}>ping</Link>
-        <Route path={"/user/:username"} render={({match}) => <h2>URL: {(match.params.username || "opos!").toUpperCase()}</h2> }/>
-    </div>
-);
-
+)
 
 const Nested = () => (
     <div>
@@ -49,16 +38,9 @@ const Nested = () => (
     </div>
 );
 
-
-
-const User = ({ match }) => {
-    console.log("zhoucpaing math:=%j", match);
-    return <h1>Hello {match.params.username}!</h1>
-};
-
 /* 为了展示URL的变化的组件 请无视我*/
 const AddressBar = () => (
-    <Route render={({ location, history}) => (
+    <Route render={({ location:{pathname}, history}) => (
         <div className="address-bar">
             <div>
                 <button

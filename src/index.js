@@ -4,57 +4,59 @@ import {BrowserRouter, Route, Link} from 'react-router-dom';
 import './index.css';
 const { render } = ReactDOM;
 
-
-
-const Links = () => (
-    <nav>
-        <Link to="/">主页</Link>
-        <Link to="/about">About-页面</Link>
-        <Link replace to="/contact">Contact-页面</Link>
-        <Link to="/user">User</Link>
-        <Link to="/nested">Nested-页面</Link>
-    </nav>
-);
-
 const App = () => (
-    <BrowserRouter>
+    <BrowserRouter basename="/minooo">
         <div>
             <AddressBar/>
-            <Links />
-            <Route exact path="/" render={() => <h1>Home</h1>} />
-            <Route path="/about" render={() => <h1>About</h1>} />
-            <Route path="/contact" render={() => <h1>Contact</h1>} />
-            <Route path="/user" render={UserNested} />
-            <Route path="/nested" render={Nested} />
+            <Link to="/">home</Link>
+            <Link to="/about/12?name=minooo">about</Link>
+            <Link to="/contact">contact</Link>
+            <Link to="/other/react/router">other</Link>
+            <Link to="/another/2017-04-02.html">another</Link>
+            <Link to="/query/user?id=123&name=minooo">query1</Link>
+            <Link
+                to={{pathname: '/query/user', search: '?id=456&name=minooo'}}
+            >query2</Link>
+            <div>
+                <Route exact path="/" component={Home} />
+                <Route path="/about/:id" render={({history,location,match}) => (
+                    <h1>
+                        {console.log("history=%j---location=%j---match=%j", history, location, match)}
+                        About
+                        <span onClick={() => {history.push('/', {name:'mm'})}}>click me</span>
+                    </h1>)
+                } />
+                <Route path="/contact" children={({match}) => match && <h1>Contact</h1> } />
+                <Route path="/other/:page?/:subpage?" render={({ match }) => (
+                    <h1>
+                        PAGE: {match.params.page}<br/>
+                        SUBPAGE: {match.params.subpage}
+
+                    </h1>
+                )} />
+            </div>
+
+            <Route path="/another/:a(\d{4}-\d{2}-\d{2}):b(\.):c([a-z]+)" render={({ match }) => (
+                <h1>
+                    paramA: {match.params.a}<br/>
+                    paramB: {match.params.b}<br/>
+                    paramC: {match.params.c}
+                </h1>
+            )} />
+            <Route path='/query/user' render={({match, location}) => (
+                <div>
+                    <p>query</p>
+                    <p>match:{JSON.stringify(match)}</p>
+                    <p>location:{JSON.stringify(location)}</p>
+                    <p>id:{new URLSearchParams(location.search).get('id')}</p>
+                    <p>name:{new URLSearchParams(location.search).get('name')}</p>
+                </div>
+            )} />
         </div>
     </BrowserRouter>
 );
-const UserNested = () => (
-    <div>
-        <Link to={"/user/zhou"}>zhou</Link>
-        <Link to={"/user/chang"}>chang</Link>
-        <Link to={"/user/ping"}>ping</Link>
-        <Route path={"/user/:username"} render={({match}) => <h2>URL: {(match.params.username || "opos!").toUpperCase()}</h2> }/>
-    </div>
-);
 
-
-const Nested = () => (
-    <div>
-        <Link to="/nested/one">One</Link>
-        <Link to="/nested/two">Two</Link>
-        <Link replace to="/nested/Three">Three</Link>
-        <div>选择一个点击</div>
-        <Route path="/nested/:minooo?" render={({match}) => <h2>URL: {match.params.minooo || 'minooo'}</h2>} />
-    </div>
-);
-
-
-
-const User = ({ match }) => {
-    console.log("zhoucpaing math:=%j", match);
-    return <h1>Hello {match.params.username}!</h1>
-};
+const Home = (props) => {console.log(props, 'home'); return <h1>Home</h1>};
 
 /* 为了展示URL的变化的组件 请无视我*/
 const AddressBar = () => (
@@ -78,4 +80,4 @@ const AddressBar = () => (
     )}/>
 );
 
-render(<App/>, document.getElementById('root'))
+render(<App/>, document.getElementById('root'));
